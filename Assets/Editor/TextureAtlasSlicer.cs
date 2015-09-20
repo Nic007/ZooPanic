@@ -32,7 +32,7 @@ public class TextureAtlasSlicer : EditorWindow
 
     public TextureAtlasSlicer()
     {
-        titleContent.text = "Texture Atlas Slicer";
+        title = "Texture Atlas Slicer";
     }
 
 
