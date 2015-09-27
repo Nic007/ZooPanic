@@ -1,9 +1,10 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
     [Serializable()]
-    public class LevelData {
+    public class LevelData : MonoBehaviour{
 
         public enum TypesOfTiles { Grass = 0, Road, CrossRoad, TRoad, CornerRoad }
         public enum TileRotation { North = 0, East, South, West }
@@ -15,8 +16,14 @@ namespace Assets.Scripts
             public TileRotation Rotation;
         }
 
-        public int NbTilesX = 16;
-        public int NbTilesY = 9;
-        public SerializableTile[][] TilesGrid;
+        public int NbTilesX;
+        public int NbTilesY;
+        public float TileSize;
+        public GameObject[][]  TileMap;
+
+        public TypesOfTiles     CurrentTile;
+        public TileRotation     CurrentRotation;
+
+        public GameObject       DummyBackground;
     }
 }

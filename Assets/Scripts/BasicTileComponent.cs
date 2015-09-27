@@ -4,7 +4,13 @@
 
 namespace Assets.Scripts
 {
-    public class BasicTileComponent : MonoBehaviour {
+    public class BasicTileComponent : MonoBehaviour
+    {
+
+        public GameObject NorthTile;
+        public GameObject EastTile;
+        public GameObject SouthTile;
+        public GameObject WestTile;
 
         // Use this for initialization
         void Start ()
