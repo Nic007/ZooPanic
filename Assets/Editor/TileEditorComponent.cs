@@ -49,12 +49,12 @@ namespace Assets.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Rotation  ");
+            GUILayout.Label("Rotation");
             _levelData.CurrentRotation = (LevelData.TileRotation)EditorGUILayout.EnumPopup(_levelData.CurrentRotation);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("DummyBackground");
+            GUILayout.Label("DummyBackgound");
             _levelData.DummyBackground = (GameObject)EditorGUILayout.ObjectField(_levelData.DummyBackground, typeof(GameObject), true);
             GUILayout.EndHorizontal();
 
@@ -130,7 +130,7 @@ namespace Assets.Editor
 
         private void OnAddTile(Vector3 pos)
         {
-            var gameObject = PrefabUtility.InstantiatePrefab(Resources.Load("Tiles/BasicTile")) as GameObject;
+            var gameObject = Object.Instantiate(Resources.Load("Tiles/" + _levelData.CurrentTile)) as GameObject;
             if (gameObject == null)
             {
                 Debug.LogError("Cannot create the tile.");
@@ -139,7 +139,24 @@ namespace Assets.Editor
 
             var tileIndex = GetTileIndex(pos); 
             gameObject.transform.position = new Vector3(tileIndex.x * _levelData.TileSize - (_levelData.NbTilesX * _levelData.TileSize) / 2 + _levelData.TileSize / 2, -1 * tileIndex.y * _levelData.TileSize + (_levelData.NbTilesY * _levelData.TileSize) / 2 - _levelData.TileSize / 2);
-            gameObject.transform.localScale = new Vector3(_levelData.TileSize, _levelData.TileSize);
+            gameObject.transform.localScale = new Vector3(_levelData.TileSize, _levelData.TileSize, 0.1F);
+
+			if (_levelData.CurrentRotation == LevelData.TileRotation.North) 
+			{
+				gameObject.transform.Rotate(Vector3.right);
+			} 
+			if (_levelData.CurrentRotation == LevelData.TileRotation.East) 
+			{
+				gameObject.transform.Rotate(Vector3.back * 90);
+			}
+			if (_levelData.CurrentRotation == LevelData.TileRotation.South) 
+			{
+				gameObject.transform.Rotate(Vector3.back * 180);
+			}
+			if (_levelData.CurrentRotation == LevelData.TileRotation.West) 
+			{
+				gameObject.transform.Rotate(Vector3.back * 270);
+			}
 
             var currentTile = _levelData.TileMap[tileIndex.y][tileIndex.x];
             if (currentTile != null)
@@ -152,6 +169,7 @@ namespace Assets.Editor
             AssignNeighbors(tileIndex);
         }
 
+		//Assigne les voisins de la tuile créée et assigne la tuile en tant que voisin a ses voisins
         private void AssignNeighbors(TileIndex tileIndex)
         {
             var currentTile = _levelData.TileMap[tileIndex.y][tileIndex.x];
@@ -160,27 +178,32 @@ namespace Assets.Editor
             var southTile = tileIndex.y < _levelData.NbTilesY - 1 ? _levelData.TileMap[tileIndex.y + 1][tileIndex.x] : null;
             var westTile = tileIndex.x > 0 ? _levelData.TileMap[tileIndex.y][tileIndex.x - 1] : null;
 
+			//Je sais qu'on se répete mais va savoir pourquoi ca marche pas pour west et south si je répete pas... apres c'est juste l'éditeur je vis avec
             currentTile.GetComponent<BasicTileComponent>().NorthTile = northTile;
             if (northTile != null)
             {
+				currentTile.GetComponent<BasicTileComponent>().NorthTile=_levelData.TileMap[tileIndex.y - 1][tileIndex.x];
                 northTile.GetComponent<BasicTileComponent>().SouthTile = currentTile;
             }
 
             currentTile.GetComponent<BasicTileComponent>().EastTile = eastTile;
             if (eastTile != null)
             {
+				currentTile.GetComponent<BasicTileComponent>().EastTile =_levelData.TileMap[tileIndex.y][tileIndex.x + 1];
                 eastTile.GetComponent<BasicTileComponent>().WestTile = currentTile;
             }
 
             currentTile.GetComponent<BasicTileComponent>().SouthTile = southTile;
             if (southTile != null)
             {
+				currentTile.GetComponent<BasicTileComponent>().SouthTile = _levelData.TileMap[tileIndex.y + 1][tileIndex.x];
                 southTile.GetComponent<BasicTileComponent>().NorthTile = currentTile;
             }
 
             currentTile.GetComponent<BasicTileComponent>().WestTile = northTile;
             if (westTile != null)
             {
+				currentTile.GetComponent<BasicTileComponent>().WestTile=_levelData.TileMap[tileIndex.y][tileIndex.x - 1];
                 westTile.GetComponent<BasicTileComponent>().EastTile = currentTile;
             }
         }

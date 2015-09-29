@@ -13,7 +13,7 @@ NavMeshAreas:
     cost: 2
   - name: 
     cost: 1
-  - name: 
+  - name: MeshPrincipal
     cost: 1
   - name: 
     cost: 1
