@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,19 +12,12 @@ namespace Assets.Editor
         [SerializeField]
         private LevelData _levelData;
 
-        public struct TileIndex
-        {
-            public int x { get; set; } 
-            public int y { get; set; }
-        }
+        public GameObject testStartNode;
+        public GameObject testEndNode;
 
         void OnEnable()
         {
-            _levelData = (LevelData) target;
-            if (_levelData == null)
-            {
-                _levelData = new LevelData();
-            }
+            _levelData = (LevelData) target ?? new LevelData();
         }
 
         public override void OnInspectorGUI()
@@ -166,6 +160,7 @@ namespace Assets.Editor
             }
 
             _levelData.TileMap[tileIndex.y][tileIndex.x] = gameObject;
+            gameObject.GetComponent<BasicTileComponent>().CurrentLocation = tileIndex;
             AssignNeighbors(tileIndex);
         }
 
@@ -173,38 +168,23 @@ namespace Assets.Editor
         private void AssignNeighbors(TileIndex tileIndex)
         {
             var currentTile = _levelData.TileMap[tileIndex.y][tileIndex.x];
-            var northTile = tileIndex.y > 0 ? _levelData.TileMap[tileIndex.y - 1][tileIndex.x] : null;
-            var eastTile = tileIndex.x < _levelData.NbTilesX - 1 ? _levelData.TileMap[tileIndex.y][tileIndex.x + 1] : null;
-            var southTile = tileIndex.y < _levelData.NbTilesY - 1 ? _levelData.TileMap[tileIndex.y + 1][tileIndex.x] : null;
-            var westTile = tileIndex.x > 0 ? _levelData.TileMap[tileIndex.y][tileIndex.x - 1] : null;
-
-			//Je sais qu'on se répete mais va savoir pourquoi ca marche pas pour west et south si je répete pas... apres c'est juste l'éditeur je vis avec
-            currentTile.GetComponent<BasicTileComponent>().NorthTile = northTile;
-            if (northTile != null)
+            var neighbors = new GameObject[]
             {
-				currentTile.GetComponent<BasicTileComponent>().NorthTile=_levelData.TileMap[tileIndex.y - 1][tileIndex.x];
-                northTile.GetComponent<BasicTileComponent>().SouthTile = currentTile;
-            }
+                tileIndex.y > 0 ? _levelData.TileMap[tileIndex.y - 1][tileIndex.x] : null,
+                tileIndex.x < _levelData.NbTilesX - 1 ? _levelData.TileMap[tileIndex.y][tileIndex.x + 1] : null,
+                tileIndex.y < _levelData.NbTilesY - 1 ? _levelData.TileMap[tileIndex.y + 1][tileIndex.x] : null,
+                tileIndex.x > 0 ? _levelData.TileMap[tileIndex.y][tileIndex.x - 1] : null
+            };
 
-            currentTile.GetComponent<BasicTileComponent>().EastTile = eastTile;
-            if (eastTile != null)
+            var basicTileComponent = currentTile.GetComponent<BasicTileComponent>();
+            for (int i = 0; i < sizeof (LevelData.TileRotation); ++i)
             {
-				currentTile.GetComponent<BasicTileComponent>().EastTile =_levelData.TileMap[tileIndex.y][tileIndex.x + 1];
-                eastTile.GetComponent<BasicTileComponent>().WestTile = currentTile;
-            }
-
-            currentTile.GetComponent<BasicTileComponent>().SouthTile = southTile;
-            if (southTile != null)
-            {
-				currentTile.GetComponent<BasicTileComponent>().SouthTile = _levelData.TileMap[tileIndex.y + 1][tileIndex.x];
-                southTile.GetComponent<BasicTileComponent>().NorthTile = currentTile;
-            }
-
-            currentTile.GetComponent<BasicTileComponent>().WestTile = northTile;
-            if (westTile != null)
-            {
-				currentTile.GetComponent<BasicTileComponent>().WestTile=_levelData.TileMap[tileIndex.y][tileIndex.x - 1];
-                westTile.GetComponent<BasicTileComponent>().EastTile = currentTile;
+                basicTileComponent.NeighborsObjects[i] = neighbors[i];
+                if (neighbors[i] != null)
+                {
+                    neighbors[i].GetComponent<BasicTileComponent>().NeighborsObjects[
+                        (i + 2) % (int)LevelData.TileRotation.Size] = currentTile;
+                }
             }
         }
 
@@ -219,6 +199,15 @@ namespace Assets.Editor
             tileIndex.y = (int)(deltaY / (_levelData.TileSize));
 
             return tileIndex;
+        }
+
+        void Start()
+        {
+            var pathfinder = new Assets.Scripts.PathFinderStar();
+            Debug.Log(testEndNode.GetComponent<BasicTileComponent>().CurrentLocation.x);
+            var result = pathfinder.FindShortestPath(testStartNode, testEndNode);
+
+            int joie = 0;
         }
     }
 }

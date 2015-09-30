@@ -123,7 +123,7 @@
     <Compile Include="Assets\Editor\TileEditorComponent.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Sprites\round_outline.xml" />
+    <None Include="Assets\Resources\Sprites\round_outline.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 //using static TileEditorComponent;
 
@@ -6,11 +7,26 @@ namespace Assets.Scripts
 {
     public class BasicTileComponent : MonoBehaviour
     {
+        public enum PathState
+        {
+            NotExisting,
+            Available,
+            Blocked
+        };
 
-        public GameObject NorthTile;
-        public GameObject EastTile;
-        public GameObject SouthTile;
-        public GameObject WestTile;
+        public GameObject[] NeighborsObjects = {null, null, null, null};
+
+        public PathState[] NeighborsState =
+        {
+            PathState.NotExisting,
+            PathState.NotExisting,
+            PathState.NotExisting,
+            PathState.NotExisting
+        };
+
+        [SerializeField]
+        public TileIndex CurrentLocation;
+        public LevelData.TileRotation CurrentRotation;
 
         // Use this for initialization
         void Start ()

@@ -7,7 +7,7 @@ namespace Assets.Scripts
     public class LevelData : MonoBehaviour{
 
         public enum TypesOfTiles { Grass = 0, IRoad, CrossRoad, TRoad, CornerRoad }
-        public enum TileRotation { North = 0, East, South, West }
+        public enum TileRotation { North = 0, East, South, West, Size }
 
         [Serializable()]
         public class SerializableTile
