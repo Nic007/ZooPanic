@@ -68,12 +68,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\AnimalComponent.cs" />
     <Compile Include="Assets\Scripts\BasicTileComponent.cs" />
     <Compile Include="Assets\Scripts\LevelData.cs" />
     <Compile Include="Assets\Scripts\PathFinderStar.cs" />
     <Compile Include="Assets\Scripts\PriorityQueue.cs" />
     <Compile Include="Assets\Scripts\TileIndex.cs" />
     <Compile Include="Assets\Scripts\TileManagerComponent.cs" />
+    <Compile Include="Assets\Scripts\TileUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Sprites\round_outline.xml" />

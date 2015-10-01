@@ -12,12 +12,10 @@ namespace Assets.Editor
         [SerializeField]
         private LevelData _levelData;
 
-        public GameObject testStartNode;
-        public GameObject testEndNode;
-
         void OnEnable()
         {
             _levelData = (LevelData) target ?? new LevelData();
+            TileUtility.CurrentLevelData = _levelData;
         }
 
         public override void OnInspectorGUI()
@@ -131,8 +129,8 @@ namespace Assets.Editor
                 return;
             }
 
-            var tileIndex = GetTileIndex(pos); 
-            gameObject.transform.position = new Vector3(tileIndex.x * _levelData.TileSize - (_levelData.NbTilesX * _levelData.TileSize) / 2 + _levelData.TileSize / 2, -1 * tileIndex.y * _levelData.TileSize + (_levelData.NbTilesY * _levelData.TileSize) / 2 - _levelData.TileSize / 2);
+            var tileIndex = TileUtility.GetTileIndex(pos);
+            gameObject.transform.position = TileUtility.GetTilePosition(tileIndex);
             gameObject.transform.localScale = new Vector3(_levelData.TileSize, _levelData.TileSize, 0.1F);
 
 			if (_levelData.CurrentRotation == LevelData.TileRotation.North) 
@@ -152,6 +150,16 @@ namespace Assets.Editor
 				gameObject.transform.Rotate(Vector3.back * 270);
 			}
 
+            var tileComponent = gameObject.GetComponent<BasicTileComponent>();
+            tileComponent.CurrentRotation = _levelData.CurrentRotation;
+            var newNeighborsState = new BasicTileComponent.PathState[4];
+            for (var i = 0; i < (int) LevelData.TileRotation.Size; ++i)
+            {
+                newNeighborsState[i] =
+                    tileComponent.NeighborsState[(i - (int)_levelData.CurrentRotation + (int)LevelData.TileRotation.Size) % (int)LevelData.TileRotation.Size];
+            }
+            tileComponent.NeighborsState = newNeighborsState;
+
             var currentTile = _levelData.TileMap[tileIndex.y][tileIndex.x];
             if (currentTile != null)
             {
@@ -160,7 +168,7 @@ namespace Assets.Editor
             }
 
             _levelData.TileMap[tileIndex.y][tileIndex.x] = gameObject;
-            gameObject.GetComponent<BasicTileComponent>().CurrentLocation = tileIndex;
+            tileComponent.CurrentLocation = tileIndex;
             AssignNeighbors(tileIndex);
         }
 
@@ -177,7 +185,7 @@ namespace Assets.Editor
             };
 
             var basicTileComponent = currentTile.GetComponent<BasicTileComponent>();
-            for (int i = 0; i < sizeof (LevelData.TileRotation); ++i)
+            for (var i = 0; i < sizeof (LevelData.TileRotation); ++i)
             {
                 basicTileComponent.NeighborsObjects[i] = neighbors[i];
                 if (neighbors[i] != null)
@@ -188,26 +196,13 @@ namespace Assets.Editor
             }
         }
 
-        private TileIndex GetTileIndex(Vector3 pos)
+        void Awake()
         {
-            var tileIndex = new TileIndex();
-
-            var deltaX = pos.x + _levelData.NbTilesX * _levelData.TileSize / 2;
-            tileIndex.x = (int)(deltaX / (_levelData.TileSize));
-
-            var deltaY = _levelData.NbTilesY * _levelData.TileSize / 2 - pos.y;
-            tileIndex.y = (int)(deltaY / (_levelData.TileSize));
-
-            return tileIndex;
+            TileUtility.CurrentLevelData = _levelData;
         }
 
         void Start()
         {
-            var pathfinder = new Assets.Scripts.PathFinderStar();
-            Debug.Log(testEndNode.GetComponent<BasicTileComponent>().CurrentLocation.x);
-            var result = pathfinder.FindShortestPath(testStartNode, testEndNode);
-
-            int joie = 0;
         }
     }
 }

@@ -31,7 +31,17 @@ namespace Assets.Scripts
         // Use this for initialization
         void Start ()
         {
-	
+            if (TileUtility.CurrentLevelData.TileMap == null || TileUtility.CurrentLevelData.TileMap.Length != TileUtility.CurrentLevelData.NbTilesY || TileUtility.CurrentLevelData.TileMap.Length == 0 || TileUtility.CurrentLevelData.TileMap[0].Length != TileUtility.CurrentLevelData.NbTilesX || TileUtility.CurrentLevelData.TileMap[1].Length == 0)
+            {
+                TileUtility.CurrentLevelData.TileMap = new GameObject[TileUtility.CurrentLevelData.NbTilesY][];
+                for (var i = 0; i < TileUtility.CurrentLevelData.NbTilesY; ++i)
+                {
+                    TileUtility.CurrentLevelData.TileMap[i] = new GameObject[TileUtility.CurrentLevelData.NbTilesX];
+                }
+            }
+
+            TileUtility.CurrentLevelData.TileMap[CurrentLocation.y][CurrentLocation.x] = gameObject;
+
         }
 
         void OnEditor()

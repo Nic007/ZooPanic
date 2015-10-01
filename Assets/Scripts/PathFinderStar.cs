@@ -55,7 +55,7 @@ namespace Assets.Scripts
                 for (var i = 0; i < tileComponent.NeighborsObjects.Length; ++i)
                 {
                     var neighbor = tileComponent.NeighborsObjects[i];
-                    if (neighbor == null || /*tileComponent.NeighborsState[i] != BasicTileComponent.PathState.Available ||*/ visitedNodes.Contains(neighbor))
+                    if (neighbor == null || tileComponent.NeighborsState[i] != BasicTileComponent.PathState.Available || neighbor.GetComponent<BasicTileComponent>().NeighborsState[(i + 2) % (int) LevelData.TileRotation.Size] != BasicTileComponent.PathState.Available || visitedNodes.Contains(neighbor))
                     {
                         continue;
                     }
