@@ -8,24 +8,22 @@ namespace Assets.Scripts
 {
     public static class TileUtility
     {
-        public static LevelData CurrentLevelData { get; set; }
-
-        public static Vector3 GetTilePosition(TileIndex tileIndex)
+        public static Vector3 GetTilePosition(LevelData currentLevelData, TileIndex tileIndex)
         {
             return new Vector3(
-                x: tileIndex.x * CurrentLevelData.TileSize - (CurrentLevelData.NbTilesX * CurrentLevelData.TileSize) / 2 + CurrentLevelData.TileSize / 2, 
-                y: -1 * tileIndex.y * CurrentLevelData.TileSize + (CurrentLevelData.NbTilesY * CurrentLevelData.TileSize) / 2 - CurrentLevelData.TileSize / 2);
+                x: tileIndex.x * currentLevelData.TileSize - (currentLevelData.NbTilesX * currentLevelData.TileSize) / 2 + currentLevelData.TileSize / 2, 
+                y: -1 * tileIndex.y * currentLevelData.TileSize + (currentLevelData.NbTilesY * currentLevelData.TileSize) / 2 - currentLevelData.TileSize / 2);
         }
 
-        public static TileIndex GetTileIndex(Vector3 pos)
+        public static TileIndex GetTileIndex(LevelData currentLevelData, Vector3 pos)
         {
             var tileIndex = new TileIndex();
 
-            var deltaX = pos.x + CurrentLevelData.NbTilesX * CurrentLevelData.TileSize / 2;
-            tileIndex.x = (int)(deltaX / (CurrentLevelData.TileSize));
+            var deltaX = pos.x + currentLevelData.NbTilesX * currentLevelData.TileSize / 2;
+            tileIndex.x = (int)(deltaX / (currentLevelData.TileSize));
 
-            var deltaY = CurrentLevelData.NbTilesY * CurrentLevelData.TileSize / 2 - pos.y;
-            tileIndex.y = (int)(deltaY / (CurrentLevelData.TileSize));
+            var deltaY = currentLevelData.NbTilesY * currentLevelData.TileSize / 2 - pos.y;
+            tileIndex.y = (int)(deltaY / (currentLevelData.TileSize));
 
             return tileIndex;
         }

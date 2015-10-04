@@ -15,6 +15,7 @@ namespace Assets.Scripts
         };
 
         public GameObject[] NeighborsObjects = {null, null, null, null};
+        public GameObject GameManager;
 
         public PathState[] NeighborsState =
         {
@@ -28,19 +29,23 @@ namespace Assets.Scripts
         public TileIndex CurrentLocation;
         public LevelData.TileRotation CurrentRotation;
 
+        private LevelData _currentLevelData;
+
         // Use this for initialization
         void Start ()
         {
-            if (TileUtility.CurrentLevelData.TileMap == null || TileUtility.CurrentLevelData.TileMap.Length != TileUtility.CurrentLevelData.NbTilesY || TileUtility.CurrentLevelData.TileMap.Length == 0 || TileUtility.CurrentLevelData.TileMap[0].Length != TileUtility.CurrentLevelData.NbTilesX || TileUtility.CurrentLevelData.TileMap[1].Length == 0)
+            _currentLevelData = GameManager.GetComponent<LevelData>();
+
+            if (_currentLevelData.TileMap == null || _currentLevelData.TileMap.Length != _currentLevelData.NbTilesY || _currentLevelData.TileMap.Length == 0 || _currentLevelData.TileMap[0].Length != _currentLevelData.NbTilesX || _currentLevelData.TileMap[1].Length == 0)
             {
-                TileUtility.CurrentLevelData.TileMap = new GameObject[TileUtility.CurrentLevelData.NbTilesY][];
-                for (var i = 0; i < TileUtility.CurrentLevelData.NbTilesY; ++i)
+                _currentLevelData.TileMap = new GameObject[_currentLevelData.NbTilesY][];
+                for (var i = 0; i < _currentLevelData.NbTilesY; ++i)
                 {
-                    TileUtility.CurrentLevelData.TileMap[i] = new GameObject[TileUtility.CurrentLevelData.NbTilesX];
+                    _currentLevelData.TileMap[i] = new GameObject[_currentLevelData.NbTilesX];
                 }
             }
 
-            TileUtility.CurrentLevelData.TileMap[CurrentLocation.y][CurrentLocation.x] = gameObject;
+            _currentLevelData.TileMap[CurrentLocation.y][CurrentLocation.x] = gameObject;
 
         }
 

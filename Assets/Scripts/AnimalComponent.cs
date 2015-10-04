@@ -7,6 +7,7 @@ namespace Assets.Scripts
 {
     public class AnimalComponent : MonoBehaviour
     {
+        public GameObject GameManager;
         public GameObject CurrentTile;
         public GameObject GoalTile;
 
@@ -18,12 +19,14 @@ namespace Assets.Scripts
         private int _pathIndex = 0;
         private bool _inputState = false;
         private LevelData.TileRotation _currentDirection;
+        private LevelData _currentLevelData;
 
         // Use this for initialization
         void Start ()
         {
+            _currentLevelData = GameManager.GetComponent<LevelData>();
             transform.position =
-                TileUtility.GetTilePosition(CurrentTile.GetComponent<BasicTileComponent>().CurrentLocation);
+                TileUtility.GetTilePosition(_currentLevelData, CurrentTile.GetComponent<BasicTileComponent>().CurrentLocation);
             _rigidbody2d = GetComponent<Rigidbody2D>();
         }
 	
@@ -51,10 +54,10 @@ namespace Assets.Scripts
                 _currentDirection = FindDirection(CurrentTile.GetComponent<BasicTileComponent>().CurrentLocation, _pathToFollow[_pathIndex]);
             }
 
-            var newTile = TileUtility.GetTileIndex(gameObject.transform.position);
+            var newTile = TileUtility.GetTileIndex(_currentLevelData, gameObject.transform.position);
             if (_pathToFollow != null && _pathIndex < _pathToFollow.Length && Equals(newTile, _pathToFollow[_pathIndex]))
             {
-                CurrentTile = TileUtility.CurrentLevelData.TileMap[newTile.y][newTile.x];
+                CurrentTile = _currentLevelData.TileMap[newTile.y][newTile.x];
                 _inputState = true;
             }
 

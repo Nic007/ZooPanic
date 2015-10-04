@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts;
-using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,7 +14,6 @@ namespace Assets.Editor
         void OnEnable()
         {
             _levelData = (LevelData) target ?? new LevelData();
-            TileUtility.CurrentLevelData = _levelData;
         }
 
         public override void OnInspectorGUI()
@@ -122,6 +120,8 @@ namespace Assets.Editor
 
         private void OnAddTile(Vector3 pos)
         {
+            ReloadTileMap();
+
             var gameObject = Object.Instantiate(Resources.Load("Tiles/" + _levelData.CurrentTile)) as GameObject;
             if (gameObject == null)
             {
@@ -129,8 +129,8 @@ namespace Assets.Editor
                 return;
             }
 
-            var tileIndex = TileUtility.GetTileIndex(pos);
-            gameObject.transform.position = TileUtility.GetTilePosition(tileIndex);
+            var tileIndex = TileUtility.GetTileIndex(_levelData, pos);
+            gameObject.transform.position = TileUtility.GetTilePosition(_levelData, tileIndex);
             gameObject.transform.localScale = new Vector3(_levelData.TileSize, _levelData.TileSize, 0.1F);
 
 			if (_levelData.CurrentRotation == LevelData.TileRotation.North) 
@@ -151,6 +151,8 @@ namespace Assets.Editor
 			}
 
             var tileComponent = gameObject.GetComponent<BasicTileComponent>();
+            tileComponent.GameManager = GameObject.Find("GameManager");
+
             tileComponent.CurrentRotation = _levelData.CurrentRotation;
             var newNeighborsState = new BasicTileComponent.PathState[4];
             for (var i = 0; i < (int) LevelData.TileRotation.Size; ++i)
@@ -170,6 +172,10 @@ namespace Assets.Editor
             _levelData.TileMap[tileIndex.y][tileIndex.x] = gameObject;
             tileComponent.CurrentLocation = tileIndex;
             AssignNeighbors(tileIndex);
+
+            gameObject.name = gameObject.name.Substring(0, gameObject.name.IndexOf('('));
+            gameObject.name += "_" + tileIndex.y + "_" + tileIndex.x;
+            gameObject.transform.parent = GameObject.Find("LevelTiles").transform;
         }
 
 		//Assigne les voisins de la tuile créée et assigne la tuile en tant que voisin a ses voisins
@@ -196,9 +202,19 @@ namespace Assets.Editor
             }
         }
 
+        private void ReloadTileMap()
+        {
+            var tiles = GameObject.Find("LevelTiles");
+            for (var i = 0; i < tiles.transform.childCount; ++i)
+            {
+                var tile = tiles.transform.GetChild(i).gameObject;
+                var tileComp = tile.GetComponent<BasicTileComponent>();
+                _levelData.TileMap[tileComp.CurrentLocation.y][tileComp.CurrentLocation.x] = tile;
+            }
+        }
+
         void Awake()
         {
-            TileUtility.CurrentLevelData = _levelData;
         }
 
         void Start()
