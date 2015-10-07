@@ -7,14 +7,16 @@ namespace Assets.Scripts
 {
     public class AnimalComponent : AgentComponent
 	{
-		public GameObject GoalTile;
-	
+        public TileIndex[] PathToDo;
+
 		void Update()
 		{
 			if (_pathToFollow == null || _pathToFollow.Length == 0)
 			{
-				GoTo(GoalTile);
+			    _pathToFollow = PathToDo;
+			    PathToDo = null;
 			}
+
 			base.Update ();
 		}
 	}

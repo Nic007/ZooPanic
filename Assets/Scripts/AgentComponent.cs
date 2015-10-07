@@ -44,6 +44,8 @@ namespace Assets.Scripts
 				
 				if (_pathIndex >= _pathToFollow.Length)
 				{
+				    _pathIndex = 0;
+				    _pathToFollow = null;
 					return;
 				}
 				
