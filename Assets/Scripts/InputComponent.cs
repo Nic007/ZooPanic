@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngineInternal;
 
@@ -15,6 +18,7 @@ namespace Assets.Scripts
 
         private GameObject _currentTile = null;
         private LinkedList<GameObject> _tempPath;
+        private ArrayList _selectionOverlay;
         private bool _tilePathMode;
 
         // Use this for initialization
@@ -23,6 +27,7 @@ namespace Assets.Scripts
             _selectionnedAnimal = null;
             _tilePathMode = false;
             _currentTile = null;
+            _selectionOverlay = null;
 
             _selectionVisual = Instantiate(Resources.Load("SelectionVisual")) as GameObject;
             if (_selectionVisual != null)
@@ -88,8 +93,34 @@ namespace Assets.Scripts
                 var tileComponent = collidedObject.GetComponents<BasicTileComponent>().FirstOrDefault();
                 if (collidedObject != _currentTile && tileComponent != null)
                 {
+                    var dirX = tileComponent.CurrentLocation.x -
+                               _currentTile.GetComponent<BasicTileComponent>().CurrentLocation.x;
+                    var dirY = tileComponent.CurrentLocation.y -
+                               _currentTile.GetComponent<BasicTileComponent>().CurrentLocation.y;
+
+                    // Not direct neighbors
+                    if (!((Math.Abs(dirX) == 1 && Math.Abs(dirY) == 0) ^
+                          (Math.Abs(dirY) == 1 && Math.Abs(dirX) == 0)))
+                    {
+                        continue;
+                    }
+
+                    // Not available
+                    var orientation = dirX != 0 ? -dirX + 2 : dirY + 1;
+                    if (_currentTile.GetComponent<BasicTileComponent>().NeighborsState[orientation] !=
+                        BasicTileComponent.PathState.Available ||
+                        tileComponent.NeighborsState[(orientation + 2)%(int) LevelData.TileRotation.Size] !=
+                        BasicTileComponent.PathState.Available)
+                    {
+                        continue;
+                    }
+
                     _tempPath.AddLast(collidedObject);
                     _currentTile = collidedObject;
+
+                    var newOverlay = GameObject.Instantiate(Resources.Load("Tiles/SelectionOverlayTile")) as GameObject;
+                    newOverlay.transform.position = collidedObject.transform.position;
+                    _selectionOverlay.Add(newOverlay);
                 }
             }
 
@@ -101,7 +132,13 @@ namespace Assets.Scripts
             {
                 var animalComponent = _selectionnedAnimal.GetComponent<AnimalComponent>();
                 animalComponent.PathToDo = _tempPath.Select(x => x.GetComponent<BasicTileComponent>().CurrentLocation).ToArray();
-;
+
+                foreach (var tile in _selectionOverlay)
+                {
+                    DestroyImmediate(tile as GameObject);
+                }
+                _selectionOverlay = null;
+
                 _tempPath = null;
             }
 
@@ -136,6 +173,11 @@ namespace Assets.Scripts
                             _currentTile = collidedObject;
                             _tempPath = new LinkedList<GameObject>();
                             _tempPath.AddLast(_currentTile);
+
+                            _selectionOverlay = new ArrayList();
+                            var newOverlay = GameObject.Instantiate(Resources.Load("Tiles/SelectionOverlayTile")) as GameObject;
+                            newOverlay.transform.position = collidedObject.transform.position;
+                            _selectionOverlay.Add(newOverlay);
                         }
                     }
 
