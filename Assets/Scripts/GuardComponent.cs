@@ -9,6 +9,8 @@ namespace Assets.Scripts
 		public fsmState actualState;
 		public enum fsmState { patrol=0, goTo, returnTo}
 
+		public float visionRange;
+
 		private int patrolIndex = 0;
 
 		// Use this for initialization
@@ -16,6 +18,7 @@ namespace Assets.Scripts
 			base.Start ();
 			actualState = fsmState.patrol;
 			GoTo(patrolPath[patrolIndex]);
+
 		}
 		
 		// Update is called once per frame
@@ -34,7 +37,7 @@ namespace Assets.Scripts
 				patrolIndex++;
 				patrolIndex %= patrolPath.Length;
 				GoTo(patrolPath[patrolIndex]);
-			} 
+			}
 
 		}
 	}

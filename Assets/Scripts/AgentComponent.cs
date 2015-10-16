@@ -16,6 +16,7 @@ namespace Assets.Scripts
 		protected Rigidbody2D _rigidbody2d;
 		protected LevelData _currentLevelData;
 		protected LevelData.TileRotation _currentDirection;
+		protected LevelData.TileRotation _oldDirection = LevelData.TileRotation.West;
 		
 		protected TileIndex[] _pathToFollow;
 		protected int _pathIndex = 0;
@@ -26,7 +27,7 @@ namespace Assets.Scripts
 		{
 			_currentLevelData = GameManager.GetComponent<LevelData>();
 			transform.position =
-				TileUtility.GetTilePosition(_currentLevelData, CurrentTile.GetComponent<BasicTileComponent>().CurrentLocation);
+			TileUtility.GetTilePosition(_currentLevelData, CurrentTile.GetComponent<BasicTileComponent>().CurrentLocation);
 			_rigidbody2d = GetComponent<Rigidbody2D>();
 		}
 	
@@ -66,10 +67,23 @@ namespace Assets.Scripts
 				{
 					transform.position = CurrentTile.transform.position;
 					_inputState = false;
+
+					int rotationIntensity=0;
 					
 					if (_pathToFollow != null && (_pathIndex >= _pathToFollow.Length - 1 || _currentDirection != FindDirection(_pathToFollow[_pathIndex], _pathToFollow[_pathIndex + 1])))
 					{
 						_rigidbody2d.velocity = new Vector2(0, 0);
+
+						if (_oldDirection == LevelData.TileRotation.North) rotationIntensity -= 1;
+						else if (_oldDirection == LevelData.TileRotation.East) rotationIntensity -= 2;
+						else if (_oldDirection == LevelData.TileRotation.South) rotationIntensity -= 3;
+						
+						if (_currentDirection == LevelData.TileRotation.North) rotationIntensity += 1;
+						else if (_currentDirection == LevelData.TileRotation.East) rotationIntensity += 2;
+						else if (_currentDirection == LevelData.TileRotation.South) rotationIntensity += 3;
+						
+						_oldDirection = _currentDirection;
+						gameObject.GetComponentInChildren<Transform>().Rotate(Vector3.back * rotationIntensity *90); 
 					}
 				}
 			}
