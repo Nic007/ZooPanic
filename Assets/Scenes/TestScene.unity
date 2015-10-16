@@ -7664,6 +7664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfd87ea39c085c5479f36b98ae9f0094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActionButtonRadius: 1.10000002
 --- !u!1 &806649811
 GameObject:
   m_ObjectHideFlags: 0
@@ -16418,6 +16419,7 @@ GameObject:
   - 114: {fileID: 2011946918}
   - 50: {fileID: 2011946920}
   - 61: {fileID: 2011946921}
+  - 114: {fileID: 2011946922}
   m_Layer: 0
   m_Name: Lapinou
   m_TagString: Untagged
@@ -16483,6 +16485,19 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &2011946922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2011946917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e7c5b881133ea4684efda1749542f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MustManageSprite: 0
+  SelectionVisualScale: {x: 1, y: 1, z: 1}
 --- !u!1 &2015604197
 GameObject:
   m_ObjectHideFlags: 0

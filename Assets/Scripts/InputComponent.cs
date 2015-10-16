@@ -12,9 +12,7 @@ namespace Assets.Scripts
     public class InputComponent : MonoBehaviour
     {
         private GameObject _selectionnedAnimal;
-
-        // Visual effect for the simulation
-        private GameObject _selectionVisual;
+        private ButtonComponent _selectionnedButton;
 
         private GameObject _currentTile = null;
         private LinkedList<GameObject> _tempPath;
@@ -28,16 +26,6 @@ namespace Assets.Scripts
             _tilePathMode = false;
             _currentTile = null;
             _selectionOverlay = null;
-
-            _selectionVisual = Instantiate(Resources.Load("SelectionVisual")) as GameObject;
-            if (_selectionVisual != null)
-            {
-                _selectionVisual.GetComponent<MeshRenderer>().enabled = false;
-            }
-            else
-            {
-                Debug.LogError("Selection Visual not created!");
-            }
         }
 	
         // Update is called once per frame
@@ -57,6 +45,7 @@ namespace Assets.Scripts
                     case TouchPhase.Ended:
                     case TouchPhase.Canceled:
                         EndPathBuilding();
+                        EndSelection();
                         break;
                 }
             }
@@ -75,6 +64,7 @@ namespace Assets.Scripts
             if (Input.GetMouseButtonUp(0))
             {
                 EndPathBuilding();
+                EndSelection();
             }
         }
 
@@ -126,6 +116,15 @@ namespace Assets.Scripts
 
         }
 
+        private void EndSelection()
+        {
+            if (_selectionnedButton != null)
+            {
+                _selectionnedButton.Release();
+                _selectionnedButton = null;
+            }
+        }
+
         private void EndPathBuilding()
         {
             if (_tilePathMode)
@@ -147,47 +146,56 @@ namespace Assets.Scripts
 
         private void Selection(Vector2 screenPos)
         {
+            var mustRemoveAnimalSelection = true;
+
             var ray = Camera.main.ScreenPointToRay(screenPos);
             var hit2D = Physics2D.Raycast(ray.origin, Vector2.zero);
             if(hit2D.collider != null)
             {
                 var collidedObject = hit2D.collider.gameObject;
 
+                var buttonComponent = collidedObject.GetComponents<ButtonComponent>().FirstOrDefault();
+                if (buttonComponent != null)
+                {
+                    _selectionnedButton = buttonComponent;
+                    _selectionnedButton.Press();
+                    mustRemoveAnimalSelection = false;
+                }
+
                 var animalComponent = collidedObject.GetComponents<AnimalComponent>().FirstOrDefault();
                 if (animalComponent != null)
                 {
-                    _selectionnedAnimal = collidedObject;
-                    _selectionVisual.GetComponent<MeshRenderer>().enabled = true;
-                    _selectionVisual.transform.parent = _selectionnedAnimal.transform;
-                    _selectionVisual.transform.localPosition = Vector3.zero;
-
                     var hits = Physics.RaycastAll(ray);
                     foreach (var hit in hits)
                     {
-                        collidedObject = hit.collider.gameObject;
-                        var tileComponent = collidedObject.GetComponents<BasicTileComponent>().FirstOrDefault();
+                        var collidedTile = hit.collider.gameObject;
+                        var tileComponent = collidedTile.GetComponents<BasicTileComponent>().FirstOrDefault();
 
-                        if (tileComponent != null && _selectionnedAnimal != null)
+                        if (tileComponent != null && _selectionnedAnimal != null && _selectionnedAnimal.GetComponent<AnimalComponent>().CurrentTile == collidedTile)
                         {
                             _tilePathMode = true;
-                            _currentTile = collidedObject;
+                            _currentTile = collidedTile;
                             _tempPath = new LinkedList<GameObject>();
                             _tempPath.AddLast(_currentTile);
 
                             _selectionOverlay = new ArrayList();
-                            var newOverlay = GameObject.Instantiate(Resources.Load("Tiles/SelectionOverlayTile")) as GameObject;
-                            newOverlay.transform.position = collidedObject.transform.position;
+                            var newOverlay = Instantiate(Resources.Load("Tiles/SelectionOverlayTile")) as GameObject;
+                            newOverlay.transform.position = collidedTile.transform.position;
                             _selectionOverlay.Add(newOverlay);
                         }
                     }
 
-                    return;
+                    _selectionnedAnimal = collidedObject;
+                    _selectionnedAnimal.GetComponent<ButtonComponent>().Activated = true;
+                    mustRemoveAnimalSelection = false;
                 }
             }
 
-            // No animal selected
-            _selectionVisual.GetComponent<MeshRenderer>().enabled = false;
-            _selectionnedAnimal = null;
+            if (mustRemoveAnimalSelection && _selectionnedAnimal != null)
+            {
+                _selectionnedAnimal.GetComponent<ButtonComponent>().Activated = false;
+                _selectionnedAnimal = null;
+            }
         }
     }
 }
