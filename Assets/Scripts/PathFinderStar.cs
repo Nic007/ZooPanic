@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.Components;
 using PriorityQueueDemo;
 using UnityEngine;
 
@@ -22,8 +23,8 @@ namespace Assets.Scripts
 
             nodesToVisit.Add(
                 new KeyValuePair<int, GameObject>(
-                    visitedCost[startNode] + heuristic(startNode.GetComponent<BasicTileComponent>().CurrentLocation,
-                        endNode.GetComponent<BasicTileComponent>().CurrentLocation), startNode));
+                    visitedCost[startNode] + heuristic(startNode.GetComponent<TileComponent>().CurrentLocation,
+                        endNode.GetComponent<TileComponent>().CurrentLocation), startNode));
             nodesToVisitSet.Add(startNode);
 
             while (!nodesToVisit.IsEmpty)
@@ -32,12 +33,12 @@ namespace Assets.Scripts
                 if (currentNode == endNode)
                 {
                     var path = new LinkedList<TileIndex>();
-                    path.AddFirst(currentNode.GetComponent<BasicTileComponent>().CurrentLocation);
+                    path.AddFirst(currentNode.GetComponent<TileComponent>().CurrentLocation);
 
                     while (currentNode != startNode && nodesOrigin.ContainsKey(currentNode))
                     {
                         currentNode = nodesOrigin[currentNode];
-                        path.AddFirst(currentNode.GetComponent<BasicTileComponent>().CurrentLocation);
+                        path.AddFirst(currentNode.GetComponent<TileComponent>().CurrentLocation);
                     }
 
                     return path.ToArray();
@@ -51,11 +52,11 @@ namespace Assets.Scripts
                     visitedCost[currentNode] = int.MaxValue;
                 }
 
-                var tileComponent = currentNode.GetComponent<BasicTileComponent>();
+                var tileComponent = currentNode.GetComponent<TileComponent>();
                 for (var i = 0; i < tileComponent.NeighborsObjects.Length; ++i)
                 {
                     var neighbor = tileComponent.NeighborsObjects[i];
-                    if (neighbor == null || tileComponent.NeighborsState[i] != BasicTileComponent.PathState.Available || neighbor.GetComponent<BasicTileComponent>().NeighborsState[(i + 2) % (int) LevelData.TileRotation.Size] != BasicTileComponent.PathState.Available || visitedNodes.Contains(neighbor))
+                    if (neighbor == null || tileComponent.NeighborsState[i] != TileComponent.PathState.Available || neighbor.GetComponent<TileComponent>().NeighborsState[(i + 2) % (int) LevelDataComponent.TileRotation.Size] != TileComponent.PathState.Available || visitedNodes.Contains(neighbor))
                     {
                         continue;
                     }
@@ -72,8 +73,8 @@ namespace Assets.Scripts
                         visitedCost[neighbor] = possibleVisitedCost;
                         var estimatedCost = visitedCost[neighbor] +
                                                    heuristic(
-                                                       neighbor.GetComponent<BasicTileComponent>().CurrentLocation,
-                                                       endNode.GetComponent<BasicTileComponent>().CurrentLocation);
+                                                       neighbor.GetComponent<TileComponent>().CurrentLocation,
+                                                       endNode.GetComponent<TileComponent>().CurrentLocation);
 
                         if (!nodesToVisitSet.Contains(neighbor))
                         {

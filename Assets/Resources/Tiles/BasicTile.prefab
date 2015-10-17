@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 477294}
   - 212: {fileID: 21259690}
-  - 114: {fileID: 11416090}
   m_Layer: 0
   m_Name: spritesheet_33
   m_TagString: Untagged
@@ -58,17 +57,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 417388}
   m_RootOrder: 0
---- !u!114 &11416090
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 115418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11428426
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -77,13 +65,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 138478}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aea9410bae51ff45bef4000038456af, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ab03ac8471f15749b5e9f6272abc281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NorthTile: {fileID: 0}
-  EastTile: {fileID: 0}
-  SouthTile: {fileID: 0}
-  WestTile: {fileID: 0}
+  NeighborsObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  GameManager: {fileID: 0}
+  NeighborsState: 00000000000000000000000000000000
+  CurrentLocation:
+    x: 0
+    y: 0
+  CurrentRotation: 0
 --- !u!212 &21259690
 SpriteRenderer:
   m_ObjectHideFlags: 1

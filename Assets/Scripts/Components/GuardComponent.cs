@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
 	public class GuardComponent : AgentComponent {
 	
@@ -14,7 +13,7 @@ namespace Assets.Scripts
 		private int patrolIndex = 0;
 
 		// Use this for initialization
-		void Start () {
+	    new void Start () {
 			base.Start ();
 			actualState = fsmState.patrol;
 			GoTo(patrolPath[patrolIndex]);
@@ -22,7 +21,7 @@ namespace Assets.Scripts
 		}
 		
 		// Update is called once per frame
-		void Update () 
+	    new void Update () 
 		{
 			base.Update ();
 			if (actualState == fsmState.patrol)

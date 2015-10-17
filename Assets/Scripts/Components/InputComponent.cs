@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
+using Assets.Scripts.Actions;
 using UnityEngine;
-using UnityEngineInternal;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
     public class InputComponent : MonoBehaviour
     {
@@ -80,13 +78,13 @@ namespace Assets.Scripts
             foreach (var hit in hits)
             {
                 var collidedObject = hit.collider.gameObject;
-                var tileComponent = collidedObject.GetComponents<BasicTileComponent>().FirstOrDefault();
+                var tileComponent = collidedObject.GetComponents<TileComponent>().FirstOrDefault();
                 if (collidedObject != _currentTile && tileComponent != null)
                 {
                     var dirX = tileComponent.CurrentLocation.x -
-                               _currentTile.GetComponent<BasicTileComponent>().CurrentLocation.x;
+                               _currentTile.GetComponent<TileComponent>().CurrentLocation.x;
                     var dirY = tileComponent.CurrentLocation.y -
-                               _currentTile.GetComponent<BasicTileComponent>().CurrentLocation.y;
+                               _currentTile.GetComponent<TileComponent>().CurrentLocation.y;
 
                     // Not direct neighbors
                     if (!((Math.Abs(dirX) == 1 && Math.Abs(dirY) == 0) ^
@@ -97,10 +95,10 @@ namespace Assets.Scripts
 
                     // Not available
                     var orientation = dirX != 0 ? -dirX + 2 : dirY + 1;
-                    if (_currentTile.GetComponent<BasicTileComponent>().NeighborsState[orientation] !=
-                        BasicTileComponent.PathState.Available ||
-                        tileComponent.NeighborsState[(orientation + 2)%(int) LevelData.TileRotation.Size] !=
-                        BasicTileComponent.PathState.Available)
+                    if (_currentTile.GetComponent<TileComponent>().NeighborsState[orientation] !=
+                        TileComponent.PathState.Available ||
+                        tileComponent.NeighborsState[(orientation + 2)%(int) LevelDataComponent.TileRotation.Size] !=
+                        TileComponent.PathState.Available)
                     {
                         continue;
                     }
@@ -130,7 +128,7 @@ namespace Assets.Scripts
             if (_tilePathMode)
             {
                 var animalComponent = _selectionnedAnimal.GetComponent<AnimalComponent>();
-                animalComponent.PathToDo = _tempPath.Select(x => x.GetComponent<BasicTileComponent>().CurrentLocation).ToArray();
+                animalComponent.ActionsList.AddLast(new WalkAction(animalComponent, _tempPath.Select(x => x.GetComponent<TileComponent>().CurrentLocation).ToArray()));
 
                 foreach (var tile in _selectionOverlay)
                 {
@@ -157,9 +155,11 @@ namespace Assets.Scripts
                 var buttonComponent = collidedObject.GetComponents<ButtonComponent>().FirstOrDefault();
                 if (buttonComponent != null)
                 {
-                    _selectionnedButton = buttonComponent;
-                    _selectionnedButton.Press();
-                    mustRemoveAnimalSelection = false;
+                    if (buttonComponent.Press())
+                    {
+                        _selectionnedButton = buttonComponent;
+                        mustRemoveAnimalSelection = false;
+                    }
                 }
 
                 var animalComponent = collidedObject.GetComponents<AnimalComponent>().FirstOrDefault();
@@ -169,7 +169,7 @@ namespace Assets.Scripts
                     foreach (var hit in hits)
                     {
                         var collidedTile = hit.collider.gameObject;
-                        var tileComponent = collidedTile.GetComponents<BasicTileComponent>().FirstOrDefault();
+                        var tileComponent = collidedTile.GetComponents<TileComponent>().FirstOrDefault();
 
                         if (tileComponent != null && _selectionnedAnimal != null && _selectionnedAnimal.GetComponent<AnimalComponent>().CurrentTile == collidedTile)
                         {

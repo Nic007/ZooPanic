@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
     public class AnimalComponent : AgentComponent
 	{
-        public TileIndex[] PathToDo;
-
         public float ActionButtonRadius;
+
         private GameObject _specialActionButton;
 
-        void Start()
+        new void Start()
         {
             base.Start();
 
@@ -39,14 +35,8 @@ namespace Assets.Scripts
             
         }
 
-		void Update()
+        new void Update()
 		{
-			if (_pathToFollow == null || _pathToFollow.Length == 0)
-			{
-			    _pathToFollow = PathToDo;
-			    PathToDo = null;
-			}
-
 			base.Update ();
 		}
 	}

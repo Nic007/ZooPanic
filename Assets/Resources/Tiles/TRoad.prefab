@@ -78,7 +78,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 147100}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aea9410bae51ff45bef4000038456af, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ab03ac8471f15749b5e9f6272abc281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   NeighborsObjects:
@@ -124,7 +124,19 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: NeighborsState.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: NeighborsState.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: NeighborsState.Array.data[3]
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 147100}

@@ -82,15 +82,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 195752}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bae7dd3a396664d44bf312e5233eeafa, type: 3}
+  m_Script: {fileID: 11500000, guid: ed9ba2752c3fed445b95b9277da6f6bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Acceleration: 1
-  MaxSpeed: 1
+  Acceleration: 0
+  MaxSpeed: 0
+  RotationSpeed: 0
   CurrentTile: {fileID: 0}
   GameManager: {fileID: 0}
+  CurrentDirection: 0
   patrolPath: []
   actualState: 0
+  visionRange: 0
 --- !u!212 &21283778
 SpriteRenderer:
   m_ObjectHideFlags: 1

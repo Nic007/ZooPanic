@@ -1,19 +1,20 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Components;
 using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Editor
 {
     [ExecuteInEditMode]
-    [CustomEditor(typeof(LevelData))]
+    [CustomEditor(typeof(LevelDataComponent))]
     public class TileEditorComponent : UnityEditor.Editor
     {
         [SerializeField]
-        private LevelData _levelData;
+        private LevelDataComponent _levelData;
 
         void OnEnable()
         {
-            _levelData = (LevelData) target ?? new LevelData();
+            _levelData = (LevelDataComponent) target ?? new LevelDataComponent();
         }
 
         public override void OnInspectorGUI()
@@ -35,12 +36,12 @@ namespace Assets.Editor
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("CurrentTile");
-            _levelData.CurrentTile = (LevelData.TypesOfTiles)EditorGUILayout.EnumPopup(_levelData.CurrentTile);
+            _levelData.CurrentTile = (LevelDataComponent.TypesOfTiles)EditorGUILayout.EnumPopup(_levelData.CurrentTile);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Rotation");
-            _levelData.CurrentRotation = (LevelData.TileRotation)EditorGUILayout.EnumPopup(_levelData.CurrentRotation);
+            _levelData.CurrentRotation = (LevelDataComponent.TileRotation)EditorGUILayout.EnumPopup(_levelData.CurrentRotation);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -133,32 +134,32 @@ namespace Assets.Editor
             gameObject.transform.position = TileUtility.GetTilePosition(_levelData, tileIndex);
             gameObject.transform.localScale = new Vector3(_levelData.TileSize, _levelData.TileSize, 0.1F);
 
-			if (_levelData.CurrentRotation == LevelData.TileRotation.North) 
+			if (_levelData.CurrentRotation == LevelDataComponent.TileRotation.North) 
 			{
 				gameObject.transform.Rotate(Vector3.right);
 			} 
-			if (_levelData.CurrentRotation == LevelData.TileRotation.East) 
+			if (_levelData.CurrentRotation == LevelDataComponent.TileRotation.East) 
 			{
 				gameObject.transform.Rotate(Vector3.back * 90);
 			}
-			if (_levelData.CurrentRotation == LevelData.TileRotation.South) 
+			if (_levelData.CurrentRotation == LevelDataComponent.TileRotation.South) 
 			{
 				gameObject.transform.Rotate(Vector3.back * 180);
 			}
-			if (_levelData.CurrentRotation == LevelData.TileRotation.West) 
+			if (_levelData.CurrentRotation == LevelDataComponent.TileRotation.West) 
 			{
 				gameObject.transform.Rotate(Vector3.back * 270);
 			}
 
-            var tileComponent = gameObject.GetComponent<BasicTileComponent>();
+            var tileComponent = gameObject.GetComponent<TileComponent>();
             tileComponent.GameManager = GameObject.Find("GameManager");
 
             tileComponent.CurrentRotation = _levelData.CurrentRotation;
-            var newNeighborsState = new BasicTileComponent.PathState[4];
-            for (var i = 0; i < (int) LevelData.TileRotation.Size; ++i)
+            var newNeighborsState = new TileComponent.PathState[4];
+            for (var i = 0; i < (int) LevelDataComponent.TileRotation.Size; ++i)
             {
                 newNeighborsState[i] =
-                    tileComponent.NeighborsState[(i - (int)_levelData.CurrentRotation + (int)LevelData.TileRotation.Size) % (int)LevelData.TileRotation.Size];
+                    tileComponent.NeighborsState[(i - (int)_levelData.CurrentRotation + (int)LevelDataComponent.TileRotation.Size) % (int)LevelDataComponent.TileRotation.Size];
             }
             tileComponent.NeighborsState = newNeighborsState;
 
@@ -190,14 +191,14 @@ namespace Assets.Editor
                 tileIndex.x > 0 ? _levelData.TileMap[tileIndex.y][tileIndex.x - 1] : null
             };
 
-            var basicTileComponent = currentTile.GetComponent<BasicTileComponent>();
-            for (var i = 0; i < sizeof (LevelData.TileRotation); ++i)
+            var basicTileComponent = currentTile.GetComponent<TileComponent>();
+            for (var i = 0; i < sizeof (LevelDataComponent.TileRotation); ++i)
             {
                 basicTileComponent.NeighborsObjects[i] = neighbors[i];
                 if (neighbors[i] != null)
                 {
-                    neighbors[i].GetComponent<BasicTileComponent>().NeighborsObjects[
-                        (i + 2) % (int)LevelData.TileRotation.Size] = currentTile;
+                    neighbors[i].GetComponent<TileComponent>().NeighborsObjects[
+                        (i + 2) % (int)LevelDataComponent.TileRotation.Size] = currentTile;
                 }
             }
         }
@@ -208,7 +209,7 @@ namespace Assets.Editor
             for (var i = 0; i < tiles.transform.childCount; ++i)
             {
                 var tile = tiles.transform.GetChild(i).gameObject;
-                var tileComp = tile.GetComponent<BasicTileComponent>();
+                var tileComp = tile.GetComponent<TileComponent>();
                 _levelData.TileMap[tileComp.CurrentLocation.y][tileComp.CurrentLocation.x] = tile;
             }
         }

@@ -82,14 +82,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 166024}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12b8f35b6bbd50646bb16b86adcda381, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bb0f13f28ec96046a61164a1ff0b648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Acceleration: 1
-  MaxSpeed: 1
+  Acceleration: 0
+  MaxSpeed: 0
+  RotationSpeed: 0
   CurrentTile: {fileID: 0}
   GameManager: {fileID: 0}
-  GoalTile: {fileID: 0}
+  CurrentDirection: 0
+  ActionButtonRadius: 0
 --- !u!212 &21254686
 SpriteRenderer:
   m_ObjectHideFlags: 1

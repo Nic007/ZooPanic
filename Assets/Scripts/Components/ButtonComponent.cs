@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
     public class ButtonComponent : MonoBehaviour
     {
@@ -13,7 +13,6 @@ namespace Assets.Scripts
         public event ClickAction OnClicked;
 
         public delegate void ButtonStateAction(bool status);
-
         public event ButtonStateAction OnStatusChanged;
 
         private GameObject _selectionVisual;
@@ -74,9 +73,9 @@ namespace Assets.Scripts
 	
         }
 
-        public void Press()
+        public bool Press()
         {
-            if (Activated || MustBeActivatedToPerform)
+            if (Activated || !MustBeActivatedToPerform)
             {
                 _pressed = true;
                 if (PressedVisualEffect)
@@ -84,6 +83,8 @@ namespace Assets.Scripts
                     _selectionVisual.GetComponent<MeshRenderer>().material.color = _pressedColor;
                 }
             }
+
+            return _pressed;
         }
 
         public void Release()

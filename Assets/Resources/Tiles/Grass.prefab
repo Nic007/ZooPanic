@@ -78,7 +78,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 142378}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1aea9410bae51ff45bef4000038456af, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ab03ac8471f15749b5e9f6272abc281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   NeighborsObjects:
@@ -86,6 +86,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  GameManager: {fileID: 0}
   NeighborsState: 00000000000000000000000000000000
   CurrentLocation:
     x: 0

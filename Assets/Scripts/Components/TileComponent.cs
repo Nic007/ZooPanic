@@ -1,11 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-//using static TileEditorComponent;
-
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
-    public class BasicTileComponent : MonoBehaviour
+    public class TileComponent : MonoBehaviour
     {
         public enum PathState
         {
@@ -27,14 +24,14 @@ namespace Assets.Scripts
 
         [SerializeField]
         public TileIndex CurrentLocation;
-        public LevelData.TileRotation CurrentRotation;
+        public LevelDataComponent.TileRotation CurrentRotation;
 
-        private LevelData _currentLevelData;
+        private LevelDataComponent _currentLevelData;
 
         // Use this for initialization
         void Start ()
         {
-            _currentLevelData = GameManager.GetComponent<LevelData>();
+            _currentLevelData = GameManager.GetComponent<LevelDataComponent>();
 
             if (_currentLevelData.TileMap == null || _currentLevelData.TileMap.Length != _currentLevelData.NbTilesY || _currentLevelData.TileMap.Length == 0 || _currentLevelData.TileMap[0].Length != _currentLevelData.NbTilesX || _currentLevelData.TileMap[1].Length == 0)
             {

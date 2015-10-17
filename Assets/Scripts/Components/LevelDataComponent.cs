@@ -1,10 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Components
 {
     [Serializable()]
-    public class LevelData : MonoBehaviour{
+    public class LevelDataComponent : MonoBehaviour{
 
         public enum TypesOfTiles { Grass = 0, IRoad, CrossRoad, TRoad, CornerRoad, Objective, Building }
         public enum TileRotation { North = 0, East, South, West, Size }

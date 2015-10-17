@@ -51,11 +51,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 191054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33e7c5b881133ea4684efda1749542f3, type: 3}
+  m_Script: {fileID: 11500000, guid: ba546156c2ee35b4aa1e02758a0c0d27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MustBeActivatedToPerform: 1
   MustManageSprite: 1
-  SelectionVisualScale: {x: .899999976, y: 1, z: .899999976}
+  PressedVisualEffect: 1
+  SelectionVisualScale: {x: .899999976, y: 2, z: .899999976}
 --- !u!212 &21216168
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -88,7 +90,31 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: MustBeActivatedToPerform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: MustManageSprite
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: PressedVisualEffect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: SelectionVisualScale.x
+      value: .899999976
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: SelectionVisualScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: SelectionVisualScale.z
+      value: .899999976
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 191054}
